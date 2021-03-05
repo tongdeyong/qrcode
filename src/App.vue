@@ -1,20 +1,16 @@
 <template>
-  <Header />
   <div>
-    <Qrcode />
+    <Header />
+    <router-view />
   </div>
 </template>
 
 <script>
-import Header from '@/components/Header'
-import Qrcode from '@/components/Qrcode'
 
+import Header from './components/Header'
 export default {
   name: 'App',
-  components: {
-    Qrcode,
-    Header
-  }
+  components: { Header }
 }
 </script>
 

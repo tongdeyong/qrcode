@@ -1,5 +1,7 @@
 <template>
-  生成二维码
+  <div style="text-align: center">
+    生成二维码
+  </div>
 </template>
 
 <script>
