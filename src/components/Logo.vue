@@ -1,6 +1,6 @@
 <template>
   <div>
-    <span>{{ title }}</span>
+    <span style="font-size: 2.6rem">{{ title }}</span>
   </div>
 </template>
 
@@ -22,5 +22,6 @@ export default {
     text-align: left;
     padding-left: 50px;
     display: inline-block;
+    font-size: 2.6rem;
   }
 </style>

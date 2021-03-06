@@ -52,6 +52,7 @@ export default {
     text-decoration: none;
     color: #2c3e50;
     font-weight: 600;
+    font-size: 1.4rem;
   }
  span:hover {
     border-bottom: #3eaf7c 2px solid;
