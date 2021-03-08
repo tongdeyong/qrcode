@@ -2,30 +2,23 @@
   <div class="menu">
     <ul>
       <li v-for="menuItem in menuItems" :key="menuItem.id">
-        <span :class="{aStyle:menuItem.isClick}" @click="chooseMenu(menuItem.id,menuItem.path)">{{ menuItem.item }}</span>
+        <span :class="{aStyle:$route.path === menuItem.path}" @click="$router.push({ path: menuItem.path })">{{ menuItem.name }}</span>
       </li>
     </ul>
   </div>
 </template>
 
 <script>
+import { routes } from '@/router'
 export default {
   name: 'Menu',
   data() {
     return {
-      menuItems: [
-        { id: 1, item: '生成二维码', path: '/qrcode', isClick: true },
-        { id: 2, item: '时间戳转换', path: '/timer', isClick: false }
-      ]
+      menuItems: []
     }
   },
-  methods: {
-    chooseMenu(id, path) {
-      this.menuItems.map(item => {
-        item.isClick = item.id === id
-      })
-      this.$router.push({ path: path })
-    }
+  created() {
+    this.menuItems = routes
   }
 }
 </script>

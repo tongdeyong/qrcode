@@ -63,7 +63,7 @@
           </label>
           <button type="button" class="btn btn-primary" style="margin: 0 25px" @click="timeToUnix">转换</button>
           <label>
-            <input v-model="timeOutput" type="text" class="form-control" placeholder="时间时间戳">
+            <input v-model="timeOutput" type="text" class="form-control" placeholder="时间戳">
           </label>
           <label>
             <select v-model="timeType" class="form-control" style="margin-left: 5px" @change="timeToUnix">
@@ -78,8 +78,8 @@
 </template>
 
 <script>
-import { time_default_now, timeUnix_now } from '../utils'
-import { strTimeToUnixTime, unixTimeToStrTime } from '../utils'
+import { time_default_now, timeUnix_now } from '@/utils'
+import { strTimeToUnixTime, unixTimeToStrTime } from '@/utils'
 export default {
   name: 'Timer',
   data() {
@@ -125,17 +125,21 @@ export default {
     }
   },
   created() {
+    this.getRunTime()
     this.getOutputTimestamp()
   },
   methods: {
     getOutputTimestamp() {
       this.timeObject = setInterval(() => {
-        if (this.status > 0) {
-          this.timetamp_now = timeUnix_now(13, this.timeZone)
-          this.timetamp = this.timetamp_now.slice(0, 10)
-          this.localTime = time_default_now(null, this.timeZone)
-        }
+        this.getRunTime()
       }, 1000)
+    },
+    getRunTime() {
+      if (this.status > 0) {
+        this.timetamp_now = timeUnix_now(13, this.timeZone)
+        this.timetamp = this.timetamp_now.slice(0, 10)
+        this.localTime = time_default_now(null, this.timeZone)
+      }
     },
     UnixToTime() {
       this.timetampOutput = ''

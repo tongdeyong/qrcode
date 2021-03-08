@@ -1,19 +1,21 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import Qrcode from '../views/Qrcode'
 import Timer from '../views/Timer'
-const routes = [
+import Dashboard from '@/views/Dashboard'
+export const routes = [
   {
     path: '/',
-    redirect: '/qrcode'
+    name: '首页',
+    component: Dashboard
   },
   {
     path: '/qrcode',
-    name: 'Qrcode',
+    name: '生成二维码',
     component: Qrcode
   },
   {
     path: '/timer',
-    name: 'Timer',
+    name: '时间戳转换',
     component: Timer
   }
 ]
