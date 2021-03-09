@@ -42,10 +42,11 @@ export default {
       loading: false,
       download: 'qrcode.png',
       opts: {
-        errorCorrectionLevel: 'H',
-        type: 'image/jpeg',
+        errorCorrectionLevel: 'M',
+        type: 'image/png',
         quality: 0.3,
-        margin: 1,
+        margin: 4,
+        width: 100,
         color: {
           dark: '#000000',
           light: '#FFFFFF'
@@ -62,7 +63,6 @@ export default {
       const data = this.form.url || this.form.text || '请先输入文本或网址'
       QRCode.toDataURL(data, this.opts).then(url => {
         this.qrcodeUrl = url
-        console.log(this.qrcodeUrl)
         this.loading = false
       })
     },

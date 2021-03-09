@@ -2,33 +2,48 @@
   <div>
     <div class="img-div">
       <div class="img">
-        <img v-if="!!imgSrc" :src="imgSrc" alt="待解析图片">
+        <img v-if="!!imgSrc" id="showPic" :src="imgSrc" alt="待解析图片">
       </div>
-      <el-button type="primary" @click="choosePictrue">选择上传图片</el-button>
-      <input id="upload-input" type="file" accept="image/gif, image/jpg, image/png" @change="choosePictrue">
+      <el-button type="primary" @click="choosePictrue">选择二维码图片</el-button>
+      <input id="upload-input" type="file" accept="image/jpg, image/png" @change="hasChoosePictrue">
+      <canvas style="display: none" />
+      <p style="color: #aaa;margin-top: 10px">二维码图片格式只能为：jpg或png</p>
     </div>
-    <div class="img-div result">
-      输出
-    </div>
+    <div class="img-div result">{{ fileOutput }}</div>
   </div>
 </template>
 
 <script>
-// import jsQR from 'jsqr'
+import jsQR from 'jsqr'
+
 export default {
   name: 'Index',
   data() {
     return {
       imgSrc: '',
-      fileInput: ''
+      fileInput: '',
+      fileOutput: ''
     }
   },
   methods: {
     choosePictrue() {
+      document.getElementById('upload-input').click()
+    },
+    hasChoosePictrue() {
       const fileInput = document.getElementById('upload-input')
-      console.log(fileInput.files[0])
-      fileInput.click()
-      this.imgSrc = window.URL.createObjectURL(fileInput.files[0])
+      this.imgSrc = URL.createObjectURL(fileInput.files[0])
+      const canvas = document.querySelector('canvas')
+      const ctx = canvas.getContext('2d')
+      const image = new Image()
+      image.src = this.imgSrc
+      image.onload = () => {
+        canvas.width = image.width
+        canvas.height = image.height
+        ctx.drawImage(image, 0, 0, image.width, image.height)
+        const imageData = ctx.getImageData(0, 0, image.width, image.height)
+        const code = jsQR(imageData.data, imageData.width, imageData.height)
+        this.fileOutput = code ? code.data : '无法识别'
+      }
     }
   }
 }
