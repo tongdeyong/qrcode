@@ -13,7 +13,7 @@
               </el-tab-pane>
             </el-tabs>
             <div style="margin-top: 50px">
-              <el-button type="primary" :loading="loading" @click="createQrcodeImg">生成二维码</el-button>
+              <el-button type="primary" :loading="loading" size="mini" @click="createQrcodeImg">生成二维码</el-button>
             </div>
           </el-main>
           <el-aside width="200px">
@@ -21,7 +21,7 @@
               <img :src="qrcodeUrl" alt="二维码">
             </div>
             <div class="qrcodeButton">
-              <a class="btn btn-default" :href="qrcodeUrl" :download="download">下载</a>
+              <a class="btn btn-default" :href="qrcodeUrl" :download="download" size="mini">下载</a>
             </div>
           </el-aside>
         </el-container>

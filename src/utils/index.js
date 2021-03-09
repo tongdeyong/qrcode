@@ -1,6 +1,7 @@
 /**
  * 得到长度为10或13的时间戳
  * @param length
+ * @param timeZone
  * @returns {string}
  */
 export function timeUnix_now(length, timeZone) {

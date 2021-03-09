@@ -4,7 +4,7 @@
       <div class="img">
         <img v-if="!!imgSrc" id="showPic" :src="imgSrc" alt="待解析图片">
       </div>
-      <el-button type="primary" @click="choosePictrue">选择二维码图片</el-button>
+      <el-button type="primary" size="mini" @click="choosePictrue">选择二维码图片</el-button>
       <input id="upload-input" type="file" accept="image/jpg, image/png" @change="hasChoosePictrue">
       <canvas style="display: none" />
       <p style="color: #aaa;margin-top: 10px">二维码图片格式只能为：jpg或png</p>
