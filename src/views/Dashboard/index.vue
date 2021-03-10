@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>我的小工具</h1>
+    <h1>My Tool</h1>
   </div>
 </template>
 

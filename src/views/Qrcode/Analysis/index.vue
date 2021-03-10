@@ -71,12 +71,13 @@ img {
 }
 .result {
   height: 460px;
-  padding: 4px;
+  padding: 10px;
   margin: 0;
   resize: none;
   outline: 0;
   background: #fcfcfc;
   border: 1px solid #ddd;
+  text-align: left;
 }
 .el-button{
   margin-top: 20px;

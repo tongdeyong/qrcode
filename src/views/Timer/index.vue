@@ -73,6 +73,12 @@
           </label>
         </div>
       </form>
+      <h4 class="content-title">&gt;&gt; 转换历史</h4>
+      <div>
+        <p v-for="(item, index) in timeList" :key="index">
+          <span class="font-style">{{ item.s }}</span>=><span class="font-style">{{ item.e }}</span>
+        </p>
+      </div>
     </div>
   </div>
 </template>
@@ -80,6 +86,7 @@
 <script>
 import { time_default_now, timeUnix_now } from '@/utils'
 import { strTimeToUnixTime, unixTimeToStrTime } from '@/utils'
+import { mapGetters } from 'vuex'
 export default {
   name: 'Timer',
   data() {
@@ -124,6 +131,9 @@ export default {
       timeOutput: ''
     }
   },
+  computed: {
+    ...mapGetters(['timeList'])
+  },
   created() {
     this.getRunTime()
     this.getOutputTimestamp()
@@ -144,13 +154,14 @@ export default {
     UnixToTime() {
       this.timetampOutput = ''
       if (this.timetampInput) {
-        if (typeof this.timetampInput !== 'number') {
-          alert('请填写数字')
-          return
+        if (/^\d+$/.test(this.timetampInput)) {
+          this.timetampOutput = unixTimeToStrTime('Y-m-d H:i:s', this.timetampInput, this.timeZone)
+          this.$store.dispatch('time/addItem', { s: this.timetampInput, e: this.timetampOutput })
+        } else {
+          this.$alert('请填写数字')
         }
-        this.timetampOutput = unixTimeToStrTime('Y-m-d H:i:s', this.timetampInput, this.timeZone)
       } else {
-        alert('先填写你需要转换的时间戳')
+        this.$alert('先填写你需要转换的时间戳')
       }
     },
     timeToUnix() {
@@ -161,12 +172,15 @@ export default {
       this.timeOutput = ''
       if (this.timeInput) {
         if (!/\d{2}-\d{2}-\d{2}( \d{2}:\d{2}:\d{2})?/.test(this.timeInput)) {
-          alert('时间格式为:' + this.localTime + '或' + this.localTime.slice(0, 10))
+          this.$alert('时间格式为:' + this.localTime + '或' + this.localTime.slice(0, 10))
           return
         }
         this.timeOutput = strTimeToUnixTime(length, this.timeInput, this.timeZone)
+        this.$store.dispatch('time/addItem', {
+          s: this.timeInput, e: this.timeOutput
+        })
       } else {
-        alert('先填写你需要转换的时间')
+        this.$alert('先填写你需要转换的时间')
       }
     },
     changeTimeZone() {
@@ -200,4 +214,10 @@ export default {
    width: 100px;
    vertical-align: inherit;
  }
+  .font-style {
+    color: #2e6da4;
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0 20px;
+  }
 </style>

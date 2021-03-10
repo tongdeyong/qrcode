@@ -12,62 +12,129 @@
                 <el-input v-model="form.url" type="textarea" placeholder="输入网址" />
               </el-tab-pane>
             </el-tabs>
-            <div style="margin-top: 50px">
+            <div style="margin-top:30px">
               <el-button type="primary" :loading="loading" size="mini" @click="createQrcodeImg">生成二维码</el-button>
             </div>
           </el-main>
-          <el-aside width="200px">
-            <div class="qrcodeImg">
-              <img :src="qrcodeUrl" alt="二维码">
-            </div>
-            <div class="qrcodeButton">
-              <a class="btn btn-default" :href="qrcodeUrl" :download="download" size="mini">下载</a>
-            </div>
+          <el-aside width="400px" style="text-align: left">
+            <el-form ref="setting" :model="setting" :rules="rules">
+              <el-form-item label="尺寸：" label-width="80px" prop="size">
+                <el-input v-model.number="setting.size" clearable />
+              </el-form-item>
+              <el-form-item label="颜色：" label-width="80px">
+                <el-color-picker v-model="setting.color" />
+              </el-form-item>
+              <el-form-item label="图标：" label-width="80px">
+                <el-radio-group v-model="setting.radio">
+                  <el-radio :label="3">不要</el-radio>
+                  <el-radio :label="6">文字</el-radio>
+                  <el-radio :label="9">上传</el-radio>
+                </el-radio-group>
+              </el-form-item>
+            </el-form>
           </el-aside>
         </el-container>
+        <div style="text-align: left">
+          <h4>历史记录如下：</h4>
+          <div
+            v-for="(imgItem,index) in qrcodeList"
+            :key="index"
+            class="qrcodeImg"
+          >
+            <el-image
+              style="width: 100%;height: 100%"
+              :src="imgItem.url"
+              :preview-src-list="srcList"
+              fit="scale-down"
+            />
+            <div style="padding: 14px;">
+              <span>{{ imgItem.name }}</span>
+              <div class="bottom">
+                <span class="time">{{ imgItem.time }}</span>
+                <el-link type="primary" class="button" :href="imgItem.url" :download="imgItem.name" :underline="false">下载</el-link>
+              </div>
+            </div>
+          </div>
+        </div>
       </el-col>
     </el-row>
+    <canvas style="display: none" />
   </div>
 </template>
 
 <script>
 import QRCode from 'qrcode'
+import { mapGetters } from 'vuex'
 export default {
   name: 'Index',
   data() {
     return {
       activeName: 'second',
       form: {},
-      qrcodeUrl: '',
       loading: false,
-      download: 'qrcode.png',
       opts: {
         errorCorrectionLevel: 'M',
         type: 'image/png',
         quality: 0.3,
-        margin: 4,
-        width: 100,
+        margin: 1,
+        width: 200,
         color: {
           dark: '#000000',
           light: '#FFFFFF'
         }
+      },
+      setting: {
+        size: 200,
+        color: '#000000',
+        radio: 3
+      },
+      rules: {
+        size: [
+          { required: true, message: '务必填写尺寸', trigger: 'blur' },
+          { type: 'number', message: '务必尺寸大于100', min: 100, trigger: 'blur' }
+        ]
       }
     }
   },
-  created() {
-    this.createQrcodeImg()
+  computed: {
+    ...mapGetters(['qrcodeList', 'srcList'])
   },
   methods: {
     createQrcodeImg() {
       this.loading = true
       const data = this.form.url || this.form.text || '请先输入文本或网址'
-      QRCode.toDataURL(data, this.opts).then(url => {
-        this.qrcodeUrl = url
-        this.loading = false
+      this.$refs['setting'].validate((valid) => {
+        if (valid) {
+          this.opts.width = this.setting.size
+          this.opts.color.dark = this.setting.color
+          QRCode.toDataURL(data, this.opts).then(url => {
+            if (this.setting.radio === 6) {
+              const canvas = document.querySelector('canvas')
+              const ctx = canvas.getContext('2d')
+              ctx.font = this.opts.width * 0.3 + 'px Arial'
+              ctx.fillText('D1', 5, 30)
+            }
+
+            this.$store.dispatch('qrcode/addImg', url)
+            this.loading = false
+          })
+        }
       })
     },
     handLeave() {
       this.form = {}
+    },
+    convertImageToCanvas(image) {
+      const canvas = document.createElement('canvas')
+      canvas.width = image.width
+      canvas.height = image.height
+      canvas.getContext('2d').drawImage(image, 0, 0)
+      return canvas
+    },
+    convertCanvasToImage(canvas) {
+      const image = new Image()
+      image.src = canvas.toDataURL('image/png')
+      return image
     }
   }
 }
@@ -76,14 +143,34 @@ export default {
 <style scoped>
 .qrcodeImg {
   width: 200px;
-  height: 200px;
-  background-color: #eaecef;
+  display: inline-block;
+  margin: 5px;
+  border-radius: 4px;
+  border: 1px solid #ebeef5;
+  background-color: #fff;
+  overflow: hidden;
+  color: #303133;
+  transition: .3s;
+  box-shadow: 0 2px 12px 0 rgba(0 0 0 0.1);
 }
-img {
-  width: 200px;
-  border: #eaecef 1px solid;
+.bottom {
+  margin-top: 13px;
+  line-height: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
-.qrcodeButton {
-  margin-top: 10px;
+.button {
+  padding: 0;
+  min-height: auto;
+}
+.time {
+  font-size: 13px;
+  color: #999;
+}
+.el-form {
+  border: 1px solid #ebeef5;
+  box-shadow: 0 2px 12px 0 rgba(0 0 0 0.1);
+  padding: 10px;
 }
 </style>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>菜鸟教程(runoob.com)</title>
+</head>
+<body>
+
+<canvas id="myCanvas" width="60" height="60" style="border:1px solid #d3d3d3;">
+    您的浏览器不支持 HTML5 canvas 标签。</canvas>
+<canvas id="myCanvas2" style="border:1px solid #d3d3d3;">
+    您的浏览器不支持 HTML5 canvas 标签。</canvas>
+
+<script>
+    const width = 200;
+    const height = 200;
+    const x = width * 0.4;
+    const y = height * 0.4;
+    const lw = width * 0.2;
+    const lh = height * 0.2;
+    const c = document.getElementById("myCanvas");
+    const ctx = c.getContext("2d");
+    ctx.font="bold 34px/40px 幼圆";
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle'
+    ctx.fillStyle='#000'
+    ctx.fillText("D25",30,30);
+    const image = new Image();
+    image.src = c.toDataURL('image/png')
+    image.onload = () => {
+        const c2 = document.getElementById("myCanvas2");
+        const ctx2 = c2.getContext("2d");
+        c2.width = width
+        c2.height = height
+        ctx2.drawImage(image,x,y,lw,lh)
+    }
+</script>
+
+</body>
+</html>
