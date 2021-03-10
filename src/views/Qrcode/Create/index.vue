@@ -28,8 +28,17 @@
                 <el-radio-group v-model="setting.radio">
                   <el-radio :label="3">不要</el-radio>
                   <el-radio :label="6">文字</el-radio>
-                  <el-radio :label="9">上传</el-radio>
+                  <el-radio :label="9">上传图片</el-radio>
                 </el-radio-group>
+              </el-form-item>
+              <el-form-item v-if="setting.radio===6" label="文字：" label-width="80px">
+                <el-input v-model.number="setting.world" clearable placeholder="二维码中间的文字" />
+              </el-form-item>
+              <el-form-item v-if="setting.radio===6" label="文字颜色：" label-width="90px">
+                <el-color-picker v-model="setting.worldColor" />
+              </el-form-item>
+              <el-form-item v-if="setting.radio===9" label="图片：" label-width="80px">
+                <el-input v-model.number="setting.picture" type="file" />
               </el-form-item>
             </el-form>
           </el-aside>
@@ -63,7 +72,6 @@
 </template>
 
 <script>
-import QRCode from 'qrcode'
 import { mapGetters } from 'vuex'
 export default {
   name: 'Index',
@@ -86,7 +94,10 @@ export default {
       setting: {
         size: 200,
         color: '#000000',
-        radio: 3
+        radio: 3,
+        worldColor: '#000000',
+        world: '',
+        picture: ''
       },
       rules: {
         size: [
@@ -107,17 +118,20 @@ export default {
         if (valid) {
           this.opts.width = this.setting.size
           this.opts.color.dark = this.setting.color
-          QRCode.toDataURL(data, this.opts).then(url => {
-            if (this.setting.radio === 6) {
-              const canvas = document.querySelector('canvas')
-              const ctx = canvas.getContext('2d')
-              ctx.font = this.opts.width * 0.3 + 'px Arial'
-              ctx.fillText('D1', 5, 30)
-            }
-
+          /* QRCode.toDataURL(data, this.opts).then(url => {
             this.$store.dispatch('qrcode/addImg', url)
             this.loading = false
-          })
+          })*/
+          if (this.setting.radio === 6) {
+            this.$store.dispatch('qrcode/createQrcodeWithWorld', {
+              text: data,
+              opts: this.opts,
+              width: 200,
+              height: 200,
+              world: this.setting.world,
+              color: this.setting.color })
+            this.loading = false
+          }
         }
       })
     },
