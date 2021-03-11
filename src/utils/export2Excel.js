@@ -151,3 +151,5 @@ const export2Excel = (theadData, tbodyData, dataname) => {
     // 导出表格
     exportToExcel(table, dataname)
 }
+
+export default export2Excel
