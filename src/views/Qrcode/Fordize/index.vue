@@ -7,6 +7,7 @@
           <el-button type="primary" :loading="uploadLoading" size="mini" @click="uploadExcel">导入数据Excel</el-button>
           <el-button type="primary" :loading="downloadLoading" size="mini" @click="downloadDefaultExcel">下载模板Excel</el-button>
           <span style="margin-left: 20px;color: #aaa">请务必按照模板中的格式填写资料</span>
+          <el-button v-if="isDownload" style="float: right" size="mini" @click="downloadAll">一键下载所有二维码</el-button>
         </div>
         <el-table
           v-loading="loading"
@@ -55,7 +56,6 @@ export default {
       tableData: [],
       tableHeader: [],
       excelTitles: {
-        index: 'No',
         text: 'text',
         world: 'world',
         qrcode: 'qrcode'
@@ -67,10 +67,34 @@ export default {
         results: null
       },
       loading: false,
-      srcList: []
+      srcList: [],
+      n: 0
+    }
+  },
+  computed: {
+    isDownload: function() {
+      return this.srcList.length === this.tableData.length && this.srcList.length > 0
     }
   },
   methods: {
+    downloadAll() {
+      const a = document.createElement('a')
+      a.target = '_blank'
+      let lenght = this.n + 10
+      lenght = lenght > this.srcList.length ? this.srcList.length : lenght
+      for (this.n; this.n < lenght; this.n++) {
+        const item = this.tableData[this.n]
+        a.href = item.url
+        a.download = item.world + '.png'
+        a.click()
+      }
+      if (lenght < this.srcList.length) {
+        this.n = lenght
+        setTimeout(() => {
+          this.downloadAll()
+        }, 1000)
+      }
+    },
     beforeUpload(file) {
       const isLt1M = file.size / 1024 / 1024 < 1
       if (isLt1M) {
@@ -158,7 +182,7 @@ export default {
       this.downloadLoading = true
       const tHeader = Object.values(this.excelTitles)
       const filterVal = Object.keys(this.excelTitles)
-      const list = []
+      const list = this.tableData
       const data = this.formatJson(filterVal, list)
       export_json_to_excel({
         header: tHeader,
