@@ -25,20 +25,24 @@
                 <el-color-picker v-model="setting.color" />
               </el-form-item>
               <el-form-item label="图标：" label-width="80px">
-                <el-radio-group v-model="setting.radio">
+                <el-radio-group v-model="setting.radio" @change="resetting">
                   <el-radio :label="3">不要</el-radio>
                   <el-radio :label="6">文字</el-radio>
                   <el-radio :label="9">上传图片</el-radio>
                 </el-radio-group>
               </el-form-item>
-              <el-form-item v-if="setting.radio===6" label="文字：" label-width="80px">
+              <el-form-item v-if="setting.radio===6" label="文字：" label-width="80px" prop="world">
                 <el-input v-model.number="setting.world" clearable placeholder="二维码中间的文字" />
               </el-form-item>
               <el-form-item v-if="setting.radio===6" label="文字颜色：" label-width="90px">
                 <el-color-picker v-model="setting.worldColor" />
               </el-form-item>
               <el-form-item v-if="setting.radio===9" label="图片：" label-width="80px">
-                <el-input v-model.number="setting.picture" type="file" />
+                <div class="my-img" @click="selectPicture">
+                  <img v-if="setting.picture" :src="setting.picture" alt="" class="avatar">
+                  <i v-else class="el-icon-plus avatar-uploader-icon" />
+                </div>
+                <input id="picture" type="file" accept=".png,.jpg,jpeg" style="display: none" @change="getPicture">
               </el-form-item>
             </el-form>
           </el-aside>
@@ -103,6 +107,9 @@ export default {
         size: [
           { required: true, message: '务必填写尺寸', trigger: 'blur' },
           { type: 'number', message: '务必尺寸大于100', min: 100, trigger: 'blur' }
+        ],
+        world: [
+          { required: true, message: '填写你需要显示的文字', trigger: 'blur' }
         ]
       }
     }
@@ -111,50 +118,78 @@ export default {
     ...mapGetters(['qrcodeList', 'srcList'])
   },
   methods: {
-    createQrcodeImg() {
-      this.loading = true
-      const data = this.form.url || this.form.text || '请先输入文本或网址'
+    selectPicture() {
+      document.getElementById('picture').click()
+    },
+    getPicture() {
+      const image = document.getElementById('picture')
+      this.setting.picture = URL.createObjectURL(image.files[0])
+    },
+    submit() {
       this.$refs['setting'].validate((valid) => {
         if (valid) {
-          this.opts.width = this.setting.size
-          this.opts.color.dark = this.setting.color
-          /* QRCode.toDataURL(data, this.opts).then(url => {
-            this.$store.dispatch('qrcode/addImg', url)
-            this.loading = false
-          })*/
-          if (this.setting.radio === 6) {
-            this.$store.dispatch('qrcode/createQrcodeWithWorld', {
-              text: data,
-              opts: this.opts,
-              width: 200,
-              height: 200,
-              world: this.setting.world,
-              color: this.setting.color })
-            this.loading = false
-          }
+          this.createQrcodeImg()
         }
       })
+    },
+    createQrcodeImg() {
+      if (!(this.form.url || this.form.text)) {
+        this.$alert('先填写文本内容或者网址', '提示', {
+          confirmButtonText: '确定'
+        })
+      } else {
+        this.loading = true
+        this.opts.width = this.setting.size
+        this.opts.color.dark = this.setting.color
+        this.$store.dispatch('qrcode/createQrcodeWithWorld', {
+          text: this.form.url || this.form.text || '请先输入文本或网址',
+          opts: this.opts,
+          size: this.setting.size,
+          world: this.setting.world,
+          color: this.setting.worldColor,
+          picture: this.setting.picture
+        }).then(() => {
+          this.loading = false
+        })
+      }
     },
     handLeave() {
       this.form = {}
     },
-    convertImageToCanvas(image) {
-      const canvas = document.createElement('canvas')
-      canvas.width = image.width
-      canvas.height = image.height
-      canvas.getContext('2d').drawImage(image, 0, 0)
-      return canvas
-    },
-    convertCanvasToImage(canvas) {
-      const image = new Image()
-      image.src = canvas.toDataURL('image/png')
-      return image
+    resetting() {
+      this.setting.world = ''
+      this.setting.picture = null
     }
   }
 }
 </script>
 
 <style scoped>
+.my-img {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  width: 100px;
+  height: 100px;
+}
+.my-img:hover {
+  border-color: #409EFF;
+}
+.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 100px;
+  height: 100px;
+  line-height: 100px;
+  text-align: center;
+}
+.avatar {
+  width: 100px;
+  height: 100px;
+  display: block;
+}
 .qrcodeImg {
   width: 200px;
   display: inline-block;
@@ -165,7 +200,7 @@ export default {
   overflow: hidden;
   color: #303133;
   transition: .3s;
-  box-shadow: 0 2px 12px 0 rgba(0 0 0 0.1);
+  box-shadow: 0 2px 12px 0 #DCDFE6;
 }
 .bottom {
   margin-top: 13px;
@@ -184,7 +219,7 @@ export default {
 }
 .el-form {
   border: 1px solid #ebeef5;
-  box-shadow: 0 2px 12px 0 rgba(0 0 0 0.1);
+  box-shadow: 0 2px 12px 0 #DCDFE6;
   padding: 10px;
 }
 </style>

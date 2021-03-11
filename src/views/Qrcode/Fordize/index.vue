@@ -18,8 +18,26 @@
           <el-table-column label="No." type="index" align="center" />
           <el-table-column label="内容" prop="text" align="center" />
           <el-table-column label="文字" prop="world" align="center" />
-          <el-table-column label="二维码" prop="qrcode" align="center" />
+          <el-table-column label="二维码" align="center">
+            <template #default="scope">
+              <el-image
+                style="width: 100px; height: 100px"
+                :src="scope.row.url"
+                fit="fit"
+                :preview-src-list="srcList"
+              />
+            </template>
+          </el-table-column>
+          <el-table-column label="操作" align="center">
+            <template #default="scope">
+              <el-link :href="scope.row.url" type="primary" target="_blank" :download="scope.row.world + '.png'">下载</el-link>
+            </template>
+          </el-table-column>
         </el-table>
+        <p style="text-align: left; margin: 20px 10px">
+          批量生成得二维码得大小默认为：200 x 200px;<br>
+          二维码中间不显示文字时，不填写文字栏
+        </p>
       </el-col>
     </el-row>
   </div>
@@ -27,7 +45,9 @@
 
 <script>
 import { export_json_to_excel } from '@/vendor/Export2Excel'
+import createImageByWorld from '@/utils/createPicture'
 import XLSX from 'xlsx'
+import QRCode from 'qrcode'
 export default {
   name: 'Index',
   data() {
@@ -46,7 +66,8 @@ export default {
         header: null,
         results: null
       },
-      loading: false
+      loading: false,
+      srcList: []
     }
   },
   methods: {
@@ -88,10 +109,43 @@ export default {
           const firstSheetName = workbook.SheetNames[0]
           const worksheet = workbook.Sheets[firstSheetName]
           this.tableData = XLSX.utils.sheet_to_json(worksheet)
+          this.createQrcodeFormData(this.tableData)
           this.uploadLoading = false
           resolve()
         }
         reader.readAsArrayBuffer(rawFile)
+      })
+    },
+    createQrcodeFormData(data) {
+      data.map(item => {
+        const canves = document.createElement('canvas')
+        canves.width = 200
+        canves.height = 200
+        QRCode.toCanvas(canves, item.text, {
+          errorCorrectionLevel: 'M',
+          type: 'image/png',
+          quality: 0.3,
+          margin: 1,
+          width: 200,
+          color: {
+            dark: '#000000',
+            light: '#FFFFFF'
+          }
+        }, (error) => {
+          if (error) {
+            console.log(error)
+            return
+          }
+          if (item.world) {
+            const image = createImageByWorld(item.world, 200)
+            image.onload = () => {
+              const ctx = canves.getContext('2d')
+              ctx.drawImage(image, 80, 80, 40, 40)
+              item.url = canves.toDataURL('image/png')
+              this.srcList.push(item.url)
+            }
+          }
+        })
       })
     },
     uploadExcel() {
@@ -104,7 +158,7 @@ export default {
       this.downloadLoading = true
       const tHeader = Object.values(this.excelTitles)
       const filterVal = Object.keys(this.excelTitles)
-      const list = this.tableData
+      const list = []
       const data = this.formatJson(filterVal, list)
       export_json_to_excel({
         header: tHeader,
