@@ -17,7 +17,7 @@
 import jsQR from 'jsqr'
 
 export default {
-  name: 'Index',
+  name: 'Analysis',
   data() {
     return {
       imgSrc: '',

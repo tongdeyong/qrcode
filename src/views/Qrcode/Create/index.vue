@@ -78,7 +78,7 @@
 <script>
 import { mapGetters } from 'vuex'
 export default {
-  name: 'Index',
+  name: 'Create',
   data() {
     return {
       activeName: 'second',

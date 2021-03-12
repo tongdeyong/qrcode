@@ -5,8 +5,7 @@
         <div style="text-align: left;margin-bottom: 20px">
           <input ref="excel-upload-input" class="excel-upload-input" type="file" accept=".xlsx, .xls" @change="handleClick">
           <el-button type="primary" :loading="uploadLoading" size="mini" @click="uploadExcel">导入数据Excel</el-button>
-          <el-button v-if="!isDownload" type="primary" :loading="downloadLoading" size="mini" @click="downloadDefaultExcel">下载模板Excel</el-button>
-          <el-button v-if="isDownload" type="primary" :loading="exportLoading" size="mini" @click="export2ExcelAll">一键导出到Excel</el-button>
+          <el-button type="primary" :loading="downloadLoading" size="mini" @click="downloadDefaultExcel">下载模板Excel</el-button>
           <span style="margin-left: 20px;color: #aaa">请务必按照模板中的格式填写资料</span>
           <el-button v-if="isDownload" style="float: right" size="mini" @click="downloadAll">一键下载所有二维码</el-button>
         </div>
@@ -50,10 +49,8 @@ import { export_json_to_excel } from '@/vendor/Export2Excel'
 import createImageByWorld from '@/utils/createPicture'
 import XLSX from 'xlsx'
 import QRCode from 'qrcode'
-import export2Excel from '@/utils/export2Excel'
-const moment = require('moment')
 export default {
-  name: 'Index',
+  name: 'Fordize',
   data() {
     return {
       tableData: [],
@@ -80,9 +77,6 @@ export default {
     }
   },
   methods: {
-    export2ExcelAll() {
-      export2Excel(Object.keys(this.excelTitles), this.tableData, 'qcode_' + moment().format('YYYYMMMDD'))
-    },
     downloadAll() {
       const a = document.createElement('a')
       a.target = '_blank'

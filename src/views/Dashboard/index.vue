@@ -1,11 +1,7 @@
 <template>
   <div>
     <h1>My Tool</h1>
-    <p>
-      This is a toolset<br>
-      You can use it to convert QR codes<br>
-      You can use it to change time
-    </p>
+    <p>This is a toolset<br>You can use it to convert QR codes<br>You can use it to change time</p>
     <p>deyong_tong 2021-03-11</p>
   </div>
 </template>

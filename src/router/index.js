@@ -2,6 +2,7 @@ import { createRouter, createWebHashHistory } from 'vue-router'
 import Qrcode from '../views/Qrcode'
 import Timer from '../views/Timer'
 import Dashboard from '@/views/Dashboard'
+import Encrypt from '@/views/Encrypt'
 export const routes = [
   {
     path: '/',
@@ -9,14 +10,19 @@ export const routes = [
     component: Dashboard
   },
   {
-    path: '/qrcode',
+    path: '/1',
     name: '生成二维码',
     component: Qrcode
   },
   {
-    path: '/timer',
+    path: '/2',
     name: '时间戳转换',
     component: Timer
+  },
+  {
+    path: '/3',
+    name: '加密解密',
+    component: Encrypt
   }
 ]
 

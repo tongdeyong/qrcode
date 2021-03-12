@@ -6,3 +6,4 @@ dist
 ./*.js
 config
 ./*.json
+exportExcel.js
