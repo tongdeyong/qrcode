@@ -7,9 +7,11 @@
           <el-button type="primary" :loading="uploadLoading" size="mini" @click="uploadExcel">导入数据Excel</el-button>
           <el-button type="primary" :loading="downloadLoading" size="mini" @click="downloadDefaultExcel">下载模板Excel</el-button>
           <span style="margin-left: 20px;color: #aaa">请务必按照模板中的格式填写资料</span>
+          <el-button v-if="isDownload" style="float: right" size="mini" @click="exportToPDF">导出为PDF</el-button>
           <el-button v-if="isDownload" style="float: right" size="mini" @click="downloadAll">一键下载所有二维码</el-button>
         </div>
         <el-table
+          id="my-table"
           v-loading="loading"
           :data="tableData"
           border
@@ -49,6 +51,7 @@ import { export_json_to_excel } from '@/vendor/Export2Excel'
 import createImageByWorld from '@/utils/createPicture'
 import XLSX from 'xlsx'
 import QRCode from 'qrcode'
+import printJS from 'print-js'
 export default {
   name: 'Fordize',
   data() {
@@ -77,6 +80,17 @@ export default {
     }
   },
   methods: {
+    exportToPDF() {
+      printJS({
+        printable: 'my-table',
+        type: 'html',
+        // 继承原来的所有样式
+        targetStyles: ['*'],
+        ignoreElements: [],
+        documentTitle: '二维码',
+        maxWidth: 1240
+      })
+    },
     downloadAll() {
       const a = document.createElement('a')
       a.target = '_blank'
