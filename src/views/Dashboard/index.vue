@@ -17,14 +17,15 @@ h1 {
   text-align: center;
   margin: 180px 0;
   font-weight: 600;
-  color: #FFD700;
-  -webkit-box-reflect: below 2px -webkit-gradient(linear, 0 0, 0 100%, from(transparent), color-stop(1.5, transparent), to(rgba(3,3,3,.4)));
+  -webkit-box-reflect: below 0 -webkit-gradient(linear, 0 0, 0 100%, from(transparent), color-stop(1.5, transparent), to(rgba(3,3,3,.4)));
   /*-webkit-box-reflect: below 3px linear-gradient(transparent, white);*/
+  font-family: 华文行楷;
 
 }
 p {
   text-align: center;
   font-size: 20px;
+  font-family: 华文行楷
 }
 
 </style>

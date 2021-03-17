@@ -1,6 +1,6 @@
 <template>
   <div>
-    <span style="font-size: 2.6rem">{{ title }}</span>
+    <span>{{ title }}</span>
   </div>
 </template>
 
@@ -23,5 +23,9 @@ export default {
     padding-left: 50px;
     display: inline-block;
     font-size: 2.6rem;
+  }
+  span {
+    font-size: 2.6rem;
+    font-family: 华文行楷;
   }
 </style>
