@@ -1,3 +1,3 @@
 module.exports = {
-  title: 'My Tool'
+  title: '我的小工具'
 }
