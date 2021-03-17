@@ -197,7 +197,6 @@ export default {
     margin: 7px 20px 0;
   }
  .form-control{
-   width: 150px;
    margin: 8px 0;
  }
  .content {
