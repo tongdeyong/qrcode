@@ -1,7 +1,7 @@
 <template>
   <div>
-    <h1>My Tool</h1>
-    <p>This is a toolset<br>You can use it to convert QR codes<br>You can use it to change time</p>
+    <h1>我的小工具</h1>
+    <p>这是一个工具集<br>你可以用它生成二维码<br>你可以用它转换时间</p>
     <p>deyong_tong 2021-03-11</p>
   </div>
 </template>
@@ -17,6 +17,10 @@ h1 {
   text-align: center;
   margin: 180px 0;
   font-weight: 600;
+  color: #FFD700;
+  -webkit-box-reflect: below 2px -webkit-gradient(linear, 0 0, 0 100%, from(transparent), color-stop(1.5, transparent), to(rgba(3,3,3,.4)));
+  /*-webkit-box-reflect: below 3px linear-gradient(transparent, white);*/
+
 }
 p {
   text-align: center;
